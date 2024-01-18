@@ -1,3 +1,7 @@
+#### Solution
+` SELECT MAX(salary) AS SecondHighestSalary FROM Employee
+WHERE salary < (SELECT MAX(salary) FROM Employee) `
+
 - https://leetcode.com/problems/second-highest-salary/description/
 #### 176. `Second highest salary`
 - - Medium
@@ -54,8 +58,3 @@ Output:
 +---------------------+
 | null                |
 +---------------------+
-
-
-#### Solution
-` SELECT MAX(salary) AS SecondHighestSalary FROM Employee
-WHERE salary < (SELECT MAX(salary) FROM Employee) `
