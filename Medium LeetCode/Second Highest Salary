@@ -1,0 +1,109 @@
+177. Nth Highest Salary
+
+#### Solution 1 using OFFSET 
+CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF @N > (SELECT COUNT(DISTINCT salary) FROM Employee)
+        BEGIN
+            SET @Result = NULL;
+        END
+    IF @N - 1 < 0 
+        BEGIN 
+            SET @Result = NULL;
+        END
+    ELSE
+        BEGIN
+            SELECT TOP 1 @Result = salary
+            FROM (
+                SELECT DISTINCT salary
+                FROM Employee
+                ORDER BY salary DESC
+                OFFSET (@N - 1) ROWS
+                FETCH NEXT 1 ROW ONLY
+            ) AS SubQuery;
+        END
+
+    RETURN @Result;
+END;
+
+#### Solution 2 Using DENSE RANK
+CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF @N > (SELECT COUNT(DISTINCT salary) FROM Employee)
+    BEGIN
+        SET @Result = NULL;
+    END
+    ELSE
+    BEGIN
+        WITH RankedSalaries AS (
+            SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS SalaryRank
+            FROM employee
+        )
+        SELECT @Result = salary
+        FROM RankedSalaries
+        WHERE SalaryRank = @N;
+    END
+
+    RETURN @Result;
+END;
+
+
+
+
+Topics
+Companies
+
+Table: Employee
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id is the primary key (column with unique values) for this table.
+Each row of this table contains information about the salary of an employee.
+ 
+Write a solution to find the nth highest salary from the Employee table. If there is no nth highest salary, return null.
+The result format is in the following example.
+ 
+Example 1:
+
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+n = 2
+Output: 
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| 200                    |
++------------------------+
+Example 2:
+
+Input: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+n = 2
+Output: 
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| null                   |
++------------------------+
