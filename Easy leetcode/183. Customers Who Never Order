@@ -1,8 +1,9 @@
 183. Customers Who Never Order
 -- -----------------------------------------------
-Solution
-  select Customers.name as Customers from Customers
-  left join orders on Customers.id = Orders.customerId where Orders.id is null
+SOLUTION
+  SELECT CUSTOMERS.NAME AS CUSTOMERS FROM CUSTOMERS
+  LEFT JOIN ORDERS ON CUSTOMERS.ID = ORDERS.CUSTOMERID 
+  WHERE ORDERS.ID IS NULL
 -- -----------------------------------------------
 
 Easy
